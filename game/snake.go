@@ -130,3 +130,17 @@ func (s *Snake) CollidesWithSelf() bool {
 func (s *Snake) StartGrow() {
 	s.growing = true
 }
+
+func (s *Snake) Reset(width, height int) {
+	cx, cy := width/2, height/2
+	s.Path = []Position{
+		{X: cx - 2, Y: cy},
+		{X: cx - 1, Y: cy},
+		{X: cx, Y: cy},
+	}
+	s.SegLen = 3
+	s.Dir = DirRight
+	s.NextDir = DirRight
+	s.growing = false
+	s.Progress = 0
+}

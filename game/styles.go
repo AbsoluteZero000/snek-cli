@@ -3,10 +3,11 @@ package game
 import "github.com/charmbracelet/lipgloss"
 
 type Styles struct {
-	Board lipgloss.Style
-	Cell  lipgloss.Style
-	Food  lipgloss.Style
-	Score lipgloss.Style
+	Board    lipgloss.Style
+	Cell     lipgloss.Style
+	Food     lipgloss.Style
+	Score    lipgloss.Style
+	GameOver lipgloss.Style
 }
 
 func NewStyles() *Styles {
@@ -21,9 +22,15 @@ func NewStyles() *Styles {
 		Food: lipgloss.NewStyle().
 			Width(2).
 			Align(lipgloss.Center).
-			Foreground(lipgloss.Color("#FF0000")),
+			Foreground(lipgloss.Color("#FF4040")),
 		Score: lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#FAFAFA")),
+		GameOver: lipgloss.NewStyle().
+			Border(lipgloss.DoubleBorder()).
+			Padding(1, 3).
+			Bold(true).
+			Foreground(lipgloss.Color("#FF0000")).
+			BorderForeground(lipgloss.Color("#FF0000")),
 	}
 }

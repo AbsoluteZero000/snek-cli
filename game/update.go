@@ -12,16 +12,33 @@ func (m *GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "q", "ctrl+c":
+		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
+		case "r":
+			if m.state == StateGameOver {
+				m.snake.Reset(m.board.Width, m.board.Height)
+				m.score = 0
+				m.tickInterval = InitialTickSpeed
+				m.food = NewFood(m.board, m.snake)
+				m.state = StatePlaying
+				return m, tea.Batch(m.tick(), m.frameTick())
+			}
 		case "up", "w", "k":
-			m.snake.ChangeDir(DirUp)
+			if m.state == StatePlaying {
+				m.snake.ChangeDir(DirUp)
+			}
 		case "down", "s", "j":
-			m.snake.ChangeDir(DirDown)
+			if m.state == StatePlaying {
+				m.snake.ChangeDir(DirDown)
+			}
 		case "left", "a", "h":
-			m.snake.ChangeDir(DirLeft)
+			if m.state == StatePlaying {
+				m.snake.ChangeDir(DirLeft)
+			}
 		case "right", "d", "l":
-			m.snake.ChangeDir(DirRight)
+			if m.state == StatePlaying {
+				m.snake.ChangeDir(DirRight)
+			}
 		}
 		return m, nil
 

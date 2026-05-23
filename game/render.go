@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -32,19 +33,31 @@ func (m *GameModel) View() string {
 		}
 	}
 
-	board := m.styles.Board.Render(b.String())
 	score := m.styles.Score.Render(m.scoreString())
 
 	if m.state == StateGameOver {
-		over := m.styles.Board.Render("  GAME OVER  \n\n  Press q to quit")
-		return lipgloss.JoinVertical(lipgloss.Center, over, score)
+		board := m.styles.Board.Render(b.String())
+		over := m.styles.GameOver.Render(
+			"GAME OVER\n\n" +
+				fmt.Sprintf("Score: %d\n", m.score) +
+				"Speed: " + speedLabel(m.tickInterval) + "\n\n" +
+				"r  restart\n" +
+				"q  quit",
+		)
+		return lipgloss.JoinVertical(lipgloss.Center, board, over, score)
 	}
 
+	board := m.styles.Board.Render(b.String())
 	return lipgloss.JoinVertical(lipgloss.Center, board, score)
 }
 
 func (m *GameModel) scoreString() string {
-	return fmt.Sprintf("Score: %d  |  Speed: %d", m.score, int(InitialTickSpeed/m.tickInterval))
+	return fmt.Sprintf("Score: %d  |  Speed: %s", m.score, speedLabel(m.tickInterval))
+}
+
+func speedLabel(d time.Duration) string {
+	s := int(InitialTickSpeed / d)
+	return fmt.Sprintf("%dx", s)
 }
 
 type cellRender struct {
