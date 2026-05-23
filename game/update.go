@@ -25,12 +25,22 @@ func (m *GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, nil
 
+	case frameMsg:
+		if m.state == StatePlaying {
+			m.snake.Progress += float64(FrameDuration) / float64(m.tickInterval)
+			if m.snake.Progress > 1.0 {
+				m.snake.Progress = 1.0
+			}
+		}
+		return m, m.frameTick()
+
 	case tickMsg:
 		if m.state != StatePlaying {
 			return m, nil
 		}
 
 		m.snake.Move()
+		m.snake.Progress = 0
 
 		if !m.board.InBounds(m.snake.Head().X, m.snake.Head().Y) {
 			m.state = StateGameOver

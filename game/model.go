@@ -10,6 +10,7 @@ const (
 	DefaultWidth     = 20
 	DefaultHeight    = 20
 	InitialTickSpeed = 200 * time.Millisecond
+	FrameDuration    = 16 * time.Millisecond
 )
 
 type GameState int
@@ -20,6 +21,7 @@ const (
 )
 
 type tickMsg struct{}
+type frameMsg struct{}
 
 type GameModel struct {
 	board        *Board
@@ -49,6 +51,12 @@ func (m *GameModel) tick() tea.Cmd {
 	})
 }
 
+func (m *GameModel) frameTick() tea.Cmd {
+	return tea.Tick(FrameDuration, func(t time.Time) tea.Msg {
+		return frameMsg{}
+	})
+}
+
 func (m *GameModel) Init() tea.Cmd {
-	return m.tick()
+	return tea.Batch(m.tick(), m.frameTick())
 }
