@@ -5,6 +5,7 @@ import "github.com/charmbracelet/lipgloss"
 type Styles struct {
 	Board lipgloss.Style
 	Cell  lipgloss.Style
+	Food  lipgloss.Style
 	Score lipgloss.Style
 }
 
@@ -15,7 +16,12 @@ func NewStyles() *Styles {
 			Padding(0, 1),
 		Cell: lipgloss.NewStyle().
 			Width(2).
-			Align(lipgloss.Center),
+			Align(lipgloss.Center).
+			Foreground(lipgloss.Color("#00FF00")),
+		Food: lipgloss.NewStyle().
+			Width(2).
+			Align(lipgloss.Center).
+			Foreground(lipgloss.Color("#FF0000")),
 		Score: lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#FAFAFA")),

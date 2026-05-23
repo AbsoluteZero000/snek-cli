@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math"
 	"strings"
 
@@ -17,8 +18,14 @@ func (m *GameModel) View() string {
 	var b strings.Builder
 	for y := 0; y < m.board.Height; y++ {
 		for x := 0; x < m.board.Width; x++ {
-			cell := string(m.board.Grid[y][x])
-			b.WriteString(m.styles.Cell.Render(cell))
+			ch := m.board.Grid[y][x]
+			var styled string
+			if ch == '●' {
+				styled = m.styles.Food.Render(string(ch))
+			} else {
+				styled = m.styles.Cell.Render(string(ch))
+			}
+			b.WriteString(styled)
 		}
 		if y < m.board.Height-1 {
 			b.WriteString("\n")
@@ -37,7 +44,7 @@ func (m *GameModel) View() string {
 }
 
 func (m *GameModel) scoreString() string {
-	return "Score: 0"
+	return fmt.Sprintf("Score: %d  |  Speed: %d", m.score, int(InitialTickSpeed/m.tickInterval))
 }
 
 type cellRender struct {
@@ -52,24 +59,20 @@ func (m *GameModel) drawGrid() {
 		}
 	}
 
+	m.board.Grid[m.food.Y][m.food.X] = '●'
+
 	positions := m.snake.InterpolatedPositions()
 	var renders []cellRender
 
-	for i, fp := range positions {
+	for _, fp := range positions {
 		cells := floatToCells(fp.X, fp.Y)
-		for _, c := range cells {
-			if c.x >= 0 && c.x < m.board.Width && c.y >= 0 && c.y < m.board.Height {
-				if i == 0 {
-					renders = append(renders, c)
-				} else {
-					renders = append(renders, c)
-				}
-			}
-		}
+		renders = append(renders, cells...)
 	}
 
 	for _, r := range renders {
-		m.board.Grid[r.y][r.x] = r.ch
+		if r.x >= 0 && r.x < m.board.Width && r.y >= 0 && r.y < m.board.Height {
+			m.board.Grid[r.y][r.x] = r.ch
+		}
 	}
 }
 

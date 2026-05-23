@@ -10,6 +10,8 @@ const (
 	DefaultWidth     = 20
 	DefaultHeight    = 20
 	InitialTickSpeed = 200 * time.Millisecond
+	MinTickSpeed     = 60 * time.Millisecond
+	SpeedDecrement   = 8 * time.Millisecond
 	FrameDuration    = 16 * time.Millisecond
 )
 
@@ -27,6 +29,7 @@ type GameModel struct {
 	board        *Board
 	styles       *Styles
 	snake        *Snake
+	food         *Food
 	state        GameState
 	score        int
 	tickInterval time.Duration
@@ -36,13 +39,15 @@ type GameModel struct {
 }
 
 func New() *GameModel {
-	return &GameModel{
+	m := &GameModel{
 		board:        NewBoard(DefaultWidth, DefaultHeight),
 		styles:       NewStyles(),
 		snake:        NewSnake(DefaultWidth, DefaultHeight),
 		state:        StatePlaying,
 		tickInterval: InitialTickSpeed,
 	}
+	m.food = NewFood(m.board, m.snake)
+	return m
 }
 
 func (m *GameModel) tick() tea.Cmd {

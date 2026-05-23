@@ -52,6 +52,15 @@ func (m *GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 
+		if m.snake.Head() == m.food.Position {
+			m.snake.StartGrow()
+			m.score++
+			m.food.Spawn(m.board, m.snake)
+			if m.tickInterval > MinTickSpeed {
+				m.tickInterval -= SpeedDecrement
+			}
+		}
+
 		return m, m.tick()
 	}
 
